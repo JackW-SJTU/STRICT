@@ -10,7 +10,7 @@
 % interaction score.
 % Example:
 % load bacteria
-% [escore_single,escore_inter]=fun_STRICT(X,Y,2,1,drugName)
+% [escore_single,escore_inter]=fun_STRICT(X,Y,2,1,Name)
 
 function [escore_single,escore_inter]=fun_STRICT(X,Y,order,draw,Name)
 %drug number
@@ -39,7 +39,7 @@ for i=1:dn
         x(i)=[];
         temp(ii)=Y(ii)*X(ii,i)*(1-sqrt(sum(x.^2)/(dn-1)))^order;
     end
-    escore_single(i,1)=round(sum(temp(temp~=0)),2);
+    escore_single(i,1)=sum(temp);
     escore_single(i,2)=sum(temp~=0);
 end
 
@@ -53,7 +53,7 @@ for i=1:dn-1
             x([i j])=[];
             temp(ii)=Y(ii)*sqrt(X(ii,i)*X(ii,j))*(1-sqrt(sum(x.^2)/(dn-2)))^order;
         end
-        escore_inter(i,j)=round(sum(temp(temp~=0)),2);
+        escore_inter(i,j)=sum(temp);
         %escore_double(j,i)=sum(temp~=0);
     end
 end

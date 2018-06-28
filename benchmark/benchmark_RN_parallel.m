@@ -17,7 +17,7 @@ for ii=1:5
         i=fix((k-1)/11)+1;
         
         if ii==1
-           model=@fun_escore;
+           model=@fun_STRICT;
         elseif ii==2
            model=@fun_lasso;
         elseif ii==3
