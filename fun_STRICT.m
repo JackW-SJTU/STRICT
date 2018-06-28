@@ -1,4 +1,18 @@
-function [escore_single,A]=fun_escore(X,Y,order,draw,Name)
+% This function evaluates the score of the drugs and interactions by two
+% inputs: 
+% X is the m*n matrix, where each row is a drug combination experiment and
+% each column is a drug, the elements of the matrix are doses
+% Y is a m*1 vector representing the efficacy corresponding to X 
+% Order is the exponential order of distance function, default is 2
+% draw is a 0/1 input for whether a heatmap will be plotted, default is not
+% Name is a drug name for plotting the heatmap.
+% The two outputs are respectively the single drug score and the drug 
+% interaction score.
+% Example:
+% load bacteria
+% [escore_single,escore_inter]=fun_STRICT(X,Y,2,1,drugName)
+
+function [escore_single,escore_inter]=fun_STRICT(X,Y,order,draw,Name)
 %drug number
 dn=size(X,2);
 %weight function order
@@ -30,7 +44,7 @@ for i=1:dn
 end
 
 %double drug escore
-escore_double=zeros(dn,dn);
+escore_inter=zeros(dn,dn);
 for i=1:dn-1
     for j=i+1:dn
         temp=zeros(expn,1);
@@ -39,20 +53,20 @@ for i=1:dn-1
             x([i j])=[];
             temp(ii)=Y(ii)*sqrt(X(ii,i)*X(ii,j))*(1-sqrt(sum(x.^2)/(dn-2)))^order;
         end
-        escore_double(i,j)=round(sum(temp(temp~=0)),2);
+        escore_inter(i,j)=round(sum(temp(temp~=0)),2);
         %escore_double(j,i)=sum(temp~=0);
     end
 end
-A=escore_double+escore_double';
+escore_inter=escore_inter+escore_inter';
 %% draw
 if draw==1
     
-    A(isnan(A))=0;
-    g=clustergram(A,'colormap',jet);
+    escore_inter(isnan(escore_inter))=0;
+    g=clustergram(escore_inter,'colormap',jet);
     seq=cellfun(@str2num,g.RowLabels);
     Name=Name(seq);
     subplot(1,100,1:75)
-    imagesc(A(seq,seq))
+    imagesc(escore_inter(seq,seq))
     colorbar
     colormap(jet)
     xticks([])
